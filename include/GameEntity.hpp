@@ -5,7 +5,7 @@
 
 class GameEntity
 {
-private:
+protected:
 	sf::Sprite *	_sprite;
 	int				_life;
 	int				_maxlife;
@@ -13,16 +13,17 @@ private:
 
 public:
 	GameEntity();
+	GameEntity(sf::Sprite * sprite);
 	GameEntity(GameEntity const & rhs);
 	~GameEntity();
 	GameEntity &	operator=(GameEntity const & rhs);
 
-	sf::Sprite *	getSprite( void );
-	int				getLife( void );
-	int				getMaxLife( void );
-	float			getSpeed( void );
+	sf::Sprite *	getSprite( void ) const;
+	int				getLife( void ) const;
+	int				getMaxLife( void ) const;
+	float			getSpeed( void ) const;
 
-	void			setSprite( void );
+	void			setSprite( sf::Sprite * sprite );
 	void			setLife(int life);
 	void			setMaxLife(int max);
 	void			setSpeed(float speed);

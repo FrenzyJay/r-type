@@ -34,8 +34,11 @@ CFLAGS += $(FLAGS) $(INCLUDES_DIR)
 DEPENDENCIES = \
 
 SOURCES = \
-		  $(SOURCES_DIR)/main.cpp \
-		  $(SOURCES_DIR)/Collision.cpp \
+			$(SOURCES_DIR)/main.cpp \
+			$(SOURCES_DIR)/Collision.cpp \
+			$(SOURCES_DIR)/GameEngine.cpp \
+			$(SOURCES_DIR)/GameEntity.cpp \
+			$(SOURCES_DIR)/Player.cpp \
 
 OBJS = $(SOURCES:.cpp=.o)
 

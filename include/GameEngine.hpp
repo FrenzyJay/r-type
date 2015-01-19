@@ -1,6 +1,7 @@
 #ifndef GAME_ENGINE_HPP
 # define GAME_ENGINE_HPP
 
+# include <list>
 # include "GameEntity.hpp"
 
 class GameEngine
@@ -11,10 +12,10 @@ public:
 	~GameEngine();
 	GameEngine &	operator=(GameEngine const & rhs);
 
-	std::list < GameEntity *> &		getGameEntities( void );
+	std::list < GameEntity *>		getGameEntities( void ) const;
 
-	void							addGameEntity( GameEntity const * entity);
-	void							removeGameEntity( GameEntity const * entity );
+	void							addGameEntity( GameEntity * entity);
+	void							removeGameEntity( GameEntity * entity );
 
 private:
 	std::list < GameEntity * >	_gameEntities;

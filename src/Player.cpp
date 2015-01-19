@@ -4,7 +4,8 @@ Player::Player():
 GameEntity()
 {}
 
-Player::Player(Player const & rhs)
+Player::Player(Player const & rhs):
+GameEntity()
 {
 	*this = rhs;
 }
@@ -18,10 +19,16 @@ Player &	Player::operator=(Player const & rhs)
 	return *this;
 }
 
-int		getScore( void ) { return this->_score; }
-void	setScore( void ) { this->_score = score; }
+int		Player::getScore( void ) const { return this->_score; }
+void	Player::setScore( int score ) { this->_score = score; }
 
-void	addPoints(int score)
+void	Player::addPoints(int score)
 {
 	this->_score += score;
+}
+
+bool	Player::load(sf::Texture const & texture)
+{
+	this->_sprite = new sf::Sprite(texture);
+	return true;
 }

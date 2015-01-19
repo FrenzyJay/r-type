@@ -17,14 +17,14 @@ GameEngine &	GameEngine::operator=(GameEngine const & rhs)
 	return *this;
 }
 
-void			addGameEntity(GameEntity const * entity)
+void			GameEngine::addGameEntity(GameEntity * entity)
 {
 	this->_gameEntities.push_back(entity);
 }
 
-void			removeGameEntity(GameEntity const * entity)
+void			GameEngine::removeGameEntity(GameEntity * entity)
 {
-	for (std::list<GameEntity *>::iterator i = this->_gameEntities.begin(); i < this->_gameEntities.end(); ++i)
+	for (std::list<GameEntity *>::iterator i = this->_gameEntities.begin(); i != this->_gameEntities.end(); ++i)
 	{
 		if (*i == entity)
 		{
@@ -34,5 +34,5 @@ void			removeGameEntity(GameEntity const * entity)
 	}
 }
 
-std::vector < GameEntity * > &	getGameEntities( void ) { return this->_gameEntities; }
+std::list < GameEntity * >		GameEngine::getGameEntities( void ) const { return this->_gameEntities; }
 

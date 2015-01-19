@@ -1,7 +1,9 @@
 #ifndef PLAYER_HPP
 # define PLAYER_HPP
 
-class Player: public GameEntity
+# include "GameEntity.hpp"
+
+class Player: protected GameEntity
 {
 private:
 	int		_score;
@@ -12,10 +14,13 @@ public:
 	~Player();
 	Player &	operator=(Player const & rhs);
 
-	int		getScore( void );
+	int		getScore( void ) const;
+
 	void	setScore(int score);
 
 	void	addPoints(int score);
+
+	bool	load(sf::Texture const & texture);
 };
 
 #endif
