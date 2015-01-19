@@ -7,23 +7,7 @@
 #include <list>
 #include "Collision.hpp"
 
-/*
-class GameBoard
-{
-private:
-	static std::vector< GameEntities >	_gameEntities;
-	int									_width;
-	int									_height;
-}
-
-class Projectile : public sf::Drawable, public sf::Transformable
-{
-public:
-	Projectile
-
-}
-*/
-
+// LE main
 int main()
 {
 	srand(time(NULL));
@@ -48,7 +32,19 @@ int main()
 
 	if (!Collision::CreateTextureAndBitmask(shipsTexture, "samplespaceships.png"))
 		return 1;
-	
+
+	sf::Texture	ponyTexture;
+	int		maxPonyLife = 10000;
+	int		ponyLife = maxPonyLife;
+	float	ponySpeed = 100.f;
+
+	if (!Collision::CreateTextureAndBitmask(ponyTexture, "evil-pony.png"))
+		return 1;
+
+	sf::Sprite	ponySprite(ponyTexture);
+	ponySprite.setScale(500 / 150, 500 / 150);
+	ponySprite.setPosition(1000, 75);
+
 	// on cree un joueur
 	sf::Sprite	playerSprite(shipsTexture);
 
@@ -104,7 +100,7 @@ int main()
         {
 			window.close();
 		}
-			
+
 		// on met à jour le joueur
 		float elapsed = clock.restart().asSeconds();
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
@@ -130,6 +126,9 @@ int main()
 				lastShot = 0;
 			}
 		}
+
+		// on bouge le poney o_o
+		ponySprite.move( -ponySpeed * elapsed, 0);
 
 		// on pop des ennemis
 		lastSpawn += elapsed;
@@ -173,16 +172,32 @@ int main()
 		// et celle des missiles
 		for ( std::list< sf::Sprite * >::iterator i = missils.begin(); i != missils.end(); ++i )
 		{
-			for ( std::list< sf::Sprite >::iterator j = enemies.begin(); j != enemies.end(); ++j )
+			// avec le poney
+			if (Collision::PixelPerfectTest(ponySprite, *(*i)))
 			{
-				if (Collision::PixelPerfectTest(*j, *(*i)))
+				// si il a de la vie c'est degueu mais le poney n'est pas dans la liste des autres entites il est special il aime se differencier des autres c'est son droit en tant que poney libre :)
+				if (ponyLife >= 0)
 				{
-					score += 10000;
-					scoreText.setString(std::to_string(score));
+					ponySprite.setColor(sf::Color(255, 255, 255, ponyLife * 255));
+					ponyLife -= 500;
+					score += 500;
 					delete *i;
 					i = missils.erase(i);
-					j = enemies.erase(j);
-					break;
+					ponySprite.move( 10, 0);
+				}
+			}
+			else
+			{
+				for ( std::list< sf::Sprite >::iterator j = enemies.begin(); j != enemies.end(); ++j )
+				{
+					if (Collision::PixelPerfectTest(*j, *(*i)))
+					{
+						score += 100;
+						delete *i;
+						i = missils.erase(i);
+						j = enemies.erase(j);
+						break;
+					}
 				}
 			}
 		}
@@ -199,6 +214,8 @@ int main()
 				playerSprite.move(playerSpeed * elapsed, 0);
 		}
 */
+		
+		scoreText.setString(std::to_string(score));
         // on dessine les objets dans la scene
         window.clear(sf::Color::Black);
         window.draw(playerSprite);
@@ -206,6 +223,9 @@ int main()
        		window.draw(*i);
 		for ( std::list< sf::Sprite * >::iterator i = missils.begin(); i != missils.end(); i++ )
 			window.draw(*(*i));
+		// stealth mode du poney mort ca aussi c'est degueu mais pareil qu'en haut le poney libre fait ce qu'il lui chante
+		if (ponyLife >= 0)
+			window.draw(ponySprite);
 		window.draw(scoreText);
         window.display();
     }
