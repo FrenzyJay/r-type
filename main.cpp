@@ -2,7 +2,9 @@
 #include <SFML/Audio.hpp>
 #include <cmath>
 #include <ctime>
+#include <iostream>
 #include <cstdlib>
+#include <list>
 #include "Collision.hpp"
 
 /*
@@ -21,6 +23,7 @@ public:
 
 }
 */
+
 int main()
 {
 	
@@ -33,7 +36,12 @@ int main()
 
 	// on charge les donnes du jeu
 	sf::Texture	shipsTexture;
-	float		shipsSpeed = 1000.f;
+	float		missilSpeed = 600.f;
+
+	float		fireRate = 0.1f;
+	float		lastShot = 1.f;
+	
+	float		shipsSpeed = 600.f;
 	float		enemySpeed = 400.f;
 	int			enemyLife = 1;
 
@@ -54,6 +62,15 @@ int main()
 	enemySprite.rotate(-90);
 
 	enemySprite.setPosition(2000, 280);
+
+	// la texture des missiles
+	sf::Texture	missilTexture;
+
+	if (!Collision::CreateTextureAndBitmask(missilTexture, "laser.png"))
+		return 1;
+
+	// on cree un tableau de missiles :D
+	std::list < sf::Sprite >	missils;
 
     // on crée un chrono pour mesurer le temps écoulé
     sf::Clock clock;
@@ -82,12 +99,42 @@ int main()
 				playerSprite.move(0, shipsSpeed * elapsed);
 		}
 
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+		{
+			if ( lastShot + elapsed > fireRate )
+			{
+				sf::Sprite	missil(missilTexture);
+				missil.setPosition(playerSprite.getPosition().x, playerSprite.getPosition().y + 10);
+				missils.push_back(missil);
+				lastShot = 0;
+			}
+		}
+		lastShot += elapsed;
+
 		// on met a jour l'ennemi
 		enemySprite.move(-enemySpeed * elapsed, 0);
+
+		// et les missiles
+		for ( std::list< sf::Sprite >::iterator i = missils.begin(); i != missils.end(); ++i )
+		{
+			(*i).move(missilSpeed * elapsed, 0.f);
+			if ((*i).getPosition().x > width)
+				i = missils.erase(i);
+		}
 
 		// on test la collision
 		if (Collision::PixelPerfectTest(playerSprite, enemySprite))
 			enemyLife = 0;
+
+		// et celle des missiles
+		for ( std::list< sf::Sprite >::iterator i = missils.begin(); i != missils.end(); ++i )
+		{
+			if (Collision::PixelPerfectTest(enemySprite, *i))
+			{
+				enemyLife = 0;
+				i = missils.erase(i);
+			}
+		}
 
 		/*
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
@@ -106,6 +153,8 @@ int main()
         window.draw(playerSprite);
 		if (enemyLife)
        		window.draw(enemySprite);
+		for ( std::list< sf::Sprite >::iterator i = missils.begin(); i != missils.end(); i++ )
+			window.draw(*i);
         window.display();
     }
 
