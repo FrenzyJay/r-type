@@ -128,7 +128,10 @@ int main()
 		}
 
 		// on bouge le poney o_o
-		ponySprite.move( -ponySpeed * elapsed, 0);
+		if (playerSprite.getPosition().y < ponySprite.getPosition().y + 200)
+			ponySprite.move( -ponySpeed * elapsed, -ponySpeed * elapsed);
+		else
+			ponySprite.move( -ponySpeed * elapsed, ponySpeed * elapsed);
 
 		// on pop des ennemis
 		lastSpawn += elapsed;
