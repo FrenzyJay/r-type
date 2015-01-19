@@ -5,6 +5,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <list>
+#include <sstream>
 #include "Collision.hpp"
 
 // LE main
@@ -83,8 +84,9 @@ int main()
 	scoreText.setCharacterSize(42);
 	scoreText.setPosition(30.f, 1.f);
 	scoreText.setColor(sf::Color::White);
-	scoreText.setString(std::to_string(score));
 
+
+	std::stringstream	ss;
     // on fait tourner la boucle principale
     while (window.isOpen())
     {
@@ -217,8 +219,10 @@ int main()
 				playerSprite.move(playerSpeed * elapsed, 0);
 		}
 */
-		
-		scoreText.setString(std::to_string(score));
+		ss << score;
+		scoreText.setString(ss.str());
+		ss.clear();
+		ss.str(std::string());
         // on dessine les objets dans la scene
         window.clear(sf::Color::Black);
         window.draw(playerSprite);
