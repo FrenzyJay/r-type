@@ -35,7 +35,7 @@ DEPENDENCIES = \
 
 SOURCES = \
 		  $(SOURCES_DIR)/main.cpp \
-		  $(SOURCES_DIR)/collision.cpp \
+		  $(SOURCES_DIR)/Collision.cpp \
 
 OBJS = $(SOURCES:.cpp=.o)
 
