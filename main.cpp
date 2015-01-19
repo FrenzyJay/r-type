@@ -26,7 +26,7 @@ public:
 
 int main()
 {
-	
+	srand(time(NULL));
 
     // on crée la fenêtre
 	int		width = 900;
@@ -35,19 +35,20 @@ int main()
     sf::RenderWindow window(sf::VideoMode(width, height), "PEW PEW");
 
 	// on charge les donnes du jeu
+	int			score = 0;
+	
 	sf::Texture	shipsTexture;
 	float		missilSpeed = 600.f;
 
-	float		fireRate = 0.1f;
+	float		fireRate = 0.2f;
 	float		lastShot = 1.f;
 	
 	float		shipsSpeed = 600.f;
-	float		enemySpeed = 400.f;
-	int			enemyLife = 1;
+	float		enemySpeed = 250.f;
 
 	if (!Collision::CreateTextureAndBitmask(shipsTexture, "samplespaceships.png"))
 		return 1;
-
+	
 	// on cree un joueur
 	sf::Sprite	playerSprite(shipsTexture);
 
@@ -56,24 +57,37 @@ int main()
 	
 	playerSprite.setPosition(70, 280);
 
-	// un ennemi
-	sf::Sprite	enemySprite(shipsTexture);
-	enemySprite.setTextureRect(sf::IntRect(40, 0, 40, 40));
-	enemySprite.rotate(-90);
-
-	enemySprite.setPosition(2000, 280);
-
 	// la texture des missiles
 	sf::Texture	missilTexture;
 
 	if (!Collision::CreateTextureAndBitmask(missilTexture, "laser.png"))
 		return 1;
 
-	// on cree un tableau de missiles :D
-	std::list < sf::Sprite >	missils;
+	// on cree une liste de pointeurs de missiles :D
+	std::list < sf::Sprite * >	missils;
+
+	// on cree une liste d'ennemi :P
+	std::list < sf::Sprite >	enemies;
+	// le spawn des ennemis
+	float		spawnRate = 0.5f;
+	float		lastSpawn = 1.f;
 
     // on crée un chrono pour mesurer le temps écoulé
     sf::Clock clock;
+
+	// on charge la font
+	sf::Font	font;
+
+	if (!font.loadFromFile("fonts/dimitri.ttf"))
+		return 1;
+
+	// on cree le texte d'affichage du score
+	sf::Text	scoreText;
+	scoreText.setFont(font);
+	scoreText.setCharacterSize(42);
+	scoreText.setPosition(30.f, 1.f);
+	scoreText.setColor(sf::Color::White);
+	scoreText.setString(std::to_string(score));
 
     // on fait tourner la boucle principale
     while (window.isOpen())
@@ -86,7 +100,12 @@ int main()
                 window.close();
         }
 
-        // on met à jour le joueur
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+        {
+			window.close();
+		}
+			
+		// on met à jour le joueur
 		float elapsed = clock.restart().asSeconds();
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 		{
@@ -99,40 +118,72 @@ int main()
 				playerSprite.move(0, shipsSpeed * elapsed);
 		}
 
+		// on tire des missiles :O pew pew pew
+		lastShot += elapsed;
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 		{
 			if ( lastShot + elapsed > fireRate )
 			{
-				sf::Sprite	missil(missilTexture);
-				missil.setPosition(playerSprite.getPosition().x, playerSprite.getPosition().y + 10);
+				sf::Sprite *	missil = new sf::Sprite(missilTexture);
+				missil->setPosition(playerSprite.getPosition().x, playerSprite.getPosition().y + 10);
 				missils.push_back(missil);
 				lastShot = 0;
 			}
 		}
-		lastShot += elapsed;
 
-		// on met a jour l'ennemi
-		enemySprite.move(-enemySpeed * elapsed, 0);
-
-		// et les missiles
-		for ( std::list< sf::Sprite >::iterator i = missils.begin(); i != missils.end(); ++i )
+		// on pop des ennemis
+		lastSpawn += elapsed;
+		if (lastSpawn + elapsed > spawnRate)
 		{
-			(*i).move(missilSpeed * elapsed, 0.f);
-			if ((*i).getPosition().x > width)
-				i = missils.erase(i);
+			sf::Sprite	enemySprite(shipsTexture);
+			enemySprite.setTextureRect(sf::IntRect(40, 0, 40, 40));
+			enemySprite.rotate(-90);
+			enemySprite.setPosition(1000, (rand() % (height - 200)) + 100);
+			enemies.push_back(enemySprite);
+			lastSpawn = 0;
+		}
+		// on les met a jour
+		for ( std::list< sf::Sprite >::iterator i = enemies.begin(); i != enemies.end(); ++i )
+		{
+			(*i).move(-enemySpeed * elapsed, 0);
+			if ((*i).getPosition().x < 0)
+			{
+				i = enemies.erase(i);
+			}
 		}
 
-		// on test la collision
-		if (Collision::PixelPerfectTest(playerSprite, enemySprite))
-			enemyLife = 0;
+		// et on met a jour les missiles
+		for ( std::list< sf::Sprite * >::iterator i = missils.begin(); i != missils.end(); ++i )
+		{
+			(*i)->move(missilSpeed * elapsed, 0.f);
+			if ((*i)->getPosition().x > width)
+			{
+				delete *i;
+				i = missils.erase(i);
+			}
+		}
+
+		// on test les collision avec le joueur
+		for ( std::list< sf::Sprite >::iterator i = enemies.begin(); i != enemies.end(); ++i )
+		{
+			if (Collision::PixelPerfectTest(playerSprite, *i))
+				i = enemies.erase(i);
+		}
 
 		// et celle des missiles
-		for ( std::list< sf::Sprite >::iterator i = missils.begin(); i != missils.end(); ++i )
+		for ( std::list< sf::Sprite * >::iterator i = missils.begin(); i != missils.end(); ++i )
 		{
-			if (Collision::PixelPerfectTest(enemySprite, *i))
+			for ( std::list< sf::Sprite >::iterator j = enemies.begin(); j != enemies.end(); ++j )
 			{
-				enemyLife = 0;
-				i = missils.erase(i);
+				if (Collision::PixelPerfectTest(*j, *(*i)))
+				{
+					score += 10000;
+					scoreText.setString(std::to_string(score));
+					delete *i;
+					i = missils.erase(i);
+					j = enemies.erase(j);
+					break;
+				}
 			}
 		}
 
@@ -148,13 +199,14 @@ int main()
 				playerSprite.move(playerSpeed * elapsed, 0);
 		}
 */
-        // on le dessine
+        // on dessine les objets dans la scene
         window.clear(sf::Color::Black);
         window.draw(playerSprite);
-		if (enemyLife)
-       		window.draw(enemySprite);
-		for ( std::list< sf::Sprite >::iterator i = missils.begin(); i != missils.end(); i++ )
-			window.draw(*i);
+		for ( std::list< sf::Sprite >::iterator i = enemies.begin(); i != enemies.end(); i++ )
+       		window.draw(*i);
+		for ( std::list< sf::Sprite * >::iterator i = missils.begin(); i != missils.end(); i++ )
+			window.draw(*(*i));
+		window.draw(scoreText);
         window.display();
     }
 
