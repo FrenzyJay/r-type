@@ -8,30 +8,32 @@
 #include <sstream>
 #include "Collision.hpp"
 
+#include "GameEngine.hpp"
+
 // LE main
 int main()
 {
 	srand(time(NULL));
 
-    // on crée la fenêtre
+	// on crée la fenêtre
 	int		width = 900;
 	int		height = 600;
-	
+
     sf::RenderWindow window(sf::VideoMode(width, height), "PEW PEW");
 
 	// on charge les donnes du jeu
 	int			score = 0;
-	
+
 	sf::Texture	shipsTexture;
 	float		missilSpeed = 600.f;
 
 	float		fireRate = 0.2f;
 	float		lastShot = 1.f;
-	
+
 	float		shipsSpeed = 600.f;
 	float		enemySpeed = 250.f;
 
-	if (!Collision::CreateTextureAndBitmask(shipsTexture, "samplespaceships.png"))
+	if (!Collision::CreateTextureAndBitmask(shipsTexture, "assets/samplespaceships.png"))
 		return 1;
 
 	sf::Texture	ponyTexture;
@@ -39,7 +41,7 @@ int main()
 	int		ponyLife = maxPonyLife;
 	float	ponySpeed = 100.f;
 
-	if (!Collision::CreateTextureAndBitmask(ponyTexture, "evil-pony.png"))
+	if (!Collision::CreateTextureAndBitmask(ponyTexture, "assets/evil-pony.png"))
 		return 1;
 
 	sf::Sprite	ponySprite(ponyTexture);
@@ -51,13 +53,13 @@ int main()
 
 	playerSprite.setTextureRect(sf::IntRect(0, 0, 40, 40));
 	playerSprite.rotate(90);
-	
+
 	playerSprite.setPosition(70, 280);
 
 	// la texture des missiles
 	sf::Texture	missilTexture;
 
-	if (!Collision::CreateTextureAndBitmask(missilTexture, "laser.png"))
+	if (!Collision::CreateTextureAndBitmask(missilTexture, "assets/laser.png"))
 		return 1;
 
 	// on cree une liste de pointeurs de missiles :D
@@ -69,8 +71,8 @@ int main()
 	float		spawnRate = 0.5f;
 	float		lastSpawn = 1.f;
 
-    // on crée un chrono pour mesurer le temps écoulé
-    sf::Clock clock;
+	// on crée un chrono pour mesurer le temps écoulé
+	sf::Clock clock;
 
 	// on charge la font
 	sf::Font	font;
@@ -87,27 +89,27 @@ int main()
 
 
 	std::stringstream	ss;
-    // on fait tourner la boucle principale
-    while (window.isOpen())
-    {
-        // on gère les évènements
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if(event.type == sf::Event::Closed)
-                window.close();
-        }
+	// on fait tourner la boucle principale
+	while (window.isOpen())
+	{
+		// on gère les évènements
+		sf::Event event;
+		while (window.pollEvent(event))
+		{
+			if(event.type == sf::Event::Closed)
+				window.close();
+		}
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
-        {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+		{
 			window.close();
 		}
 
 		// on met à jour le joueur
 		float elapsed = clock.restart().asSeconds();
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 		{
-			if (playerSprite.getPosition().y > 5.f)
+			if (playerSprite.getPosition().y > 5.f + 75)
 				playerSprite.move(0, -shipsSpeed * elapsed);
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
@@ -207,7 +209,7 @@ int main()
 			}
 		}
 
-		/*
+/*
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 		{
 			if (playerSprite.getPosition().x > 50)
@@ -223,18 +225,19 @@ int main()
 		scoreText.setString(ss.str());
 		ss.clear();
 		ss.str(std::string());
-        // on dessine les objets dans la scene
-        window.clear(sf::Color::Black);
-        window.draw(playerSprite);
+
+		// on dessine les objets dans la scene
+		window.clear(sf::Color::Black);
+		window.draw(playerSprite);
 		for ( std::list< sf::Sprite >::iterator i = enemies.begin(); i != enemies.end(); i++ )
-       		window.draw(*i);
+			window.draw(*i);
 		for ( std::list< sf::Sprite * >::iterator i = missils.begin(); i != missils.end(); i++ )
 			window.draw(*(*i));
 		// stealth mode du poney mort ca aussi c'est degueu mais pareil qu'en haut le poney libre fait ce qu'il lui chante
 		if (ponyLife >= 0)
 			window.draw(ponySprite);
 		window.draw(scoreText);
-        window.display();
+		window.display();
     }
 
     return 0;

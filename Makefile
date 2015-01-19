@@ -12,10 +12,12 @@
 
 CC = g++
 
-NAME = ft_gkrellm
+NAME = ft_rtype
 
-SOURCES_DIR = .
-INCLUDES_DIR = .
+LD_RUNPATH_SEARCH_PATHS = ~/SFML-2.1
+
+SOURCES_DIR = src
+INCLUDES_DIR = -I ~/SFML-2.1/include -I ./include
 
 ifeq ($(DEBUG), 1)
 	FLAGS = -g -Wall -Wextra
@@ -24,9 +26,10 @@ else
 	FLAGS = -Wall -Werror -Wextra
 endif
 
-LIBS = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
+LIBS = -L ~/SFML-2.1/lib -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
+#LIBS = ~/SFML-2.1/lib/libsfml-graphics.dylib ~/SFML-2.1/lib/libsfml-system.dylib ~/SFML-2.1/lib/libsfml-window.dylib
 
-CFLAGS += $(FLAGS) -I $(INCLUDES_DIR)
+CFLAGS += $(FLAGS) $(INCLUDES_DIR)
 
 DEPENDENCIES = \
 
@@ -42,8 +45,8 @@ all: $(NAME)
 	$(CC) -c $< -o $@ $(CFLAGS)
 
 $(NAME): $(OBJS)
-	@echo Creating $(NAME)...
-	$(CC) -o $(NAME) $(OBJS) $(LIBS)
+	@echo Creating $(NAME)
+	$(CC) $(OBJS) $(LIBS) -o $(NAME)
 
 clean:
 	@rm -f $(OBJS)
