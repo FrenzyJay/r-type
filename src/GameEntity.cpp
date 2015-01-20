@@ -1,7 +1,6 @@
 #include "GameEntity.hpp"
 
-GameEntity::GameEntity():
-_sprite(NULL)
+GameEntity::GameEntity()
 {}
 
 GameEntity::GameEntity(sf::Sprite * sprite):
@@ -43,12 +42,8 @@ void			GameEntity::hit(int damage)
 		this->_life -= damage;
 }
 
-void			GameEntity::update( void )
+void			GameEntity::draw(GameEngine & engine)
 {
-
+	engine.getWindow()->draw(*(this->_sprite));
 }
 
-void			GameEntity::draw(sf::RenderWindow & window)
-{
-	(void)window;
-}

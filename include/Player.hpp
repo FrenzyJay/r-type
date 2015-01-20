@@ -3,15 +3,18 @@
 
 # include "GameEntity.hpp"
 
-class Player: protected GameEntity
+class GameEngine;
+
+class Player : public GameEntity
 {
 private:
 	int		_score;
 
 public:
 	Player();
+	Player(GameEngine & engine);
 	Player(Player const & rhs);
-	~Player();
+	virtual ~Player();
 	Player &	operator=(Player const & rhs);
 
 	int		getScore( void ) const;
@@ -20,7 +23,7 @@ public:
 
 	void	addPoints(int score);
 
-	bool	load(sf::Texture const & texture);
+	virtual void	update(GameEngine & engine, float elapsed);
 };
 
 #endif

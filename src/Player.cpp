@@ -4,6 +4,16 @@ Player::Player():
 GameEntity()
 {}
 
+Player::Player(GameEngine & engine):
+GameEntity()
+{
+	this->_score = 0;
+	this->_width = 40;
+	this->_height = 40;
+	this->_sprite = new sf::Sprite(engine.getTexture( PLAYER ));
+	this->_sprite->setPosition(50, 430);
+}
+
 Player::Player(Player const & rhs):
 GameEntity()
 {
@@ -11,7 +21,9 @@ GameEntity()
 }
 
 Player::~Player()
-{}
+{
+	delete this->_sprite;
+}
 
 Player &	Player::operator=(Player const & rhs)
 {
@@ -27,8 +39,8 @@ void	Player::addPoints(int score)
 	this->_score += score;
 }
 
-bool	Player::load(sf::Texture const & texture)
+void	Player::update(GameEngine & engine, float elapsed)
 {
-	this->_sprite = new sf::Sprite(texture);
-	return true;
+	(void)engine;
+	(void)elapsed;
 }

@@ -2,7 +2,17 @@
 # define GAME_ENGINE_HPP
 
 # include <list>
+# include <SFML/Window.hpp>
+
 # include "GameEntity.hpp"
+# include "Player.hpp"
+# include "Collision.hpp"
+
+class GameEngine;
+
+enum { PLAYER, PROJECTILE, ENEMY, ENEMY_PROJECTILE };
+typedef void (GameEngine::*fp)(GameEntity *);
+typedef std::list< GameEntity * > p_list;
 
 class GameEngine
 {
@@ -12,13 +22,40 @@ public:
 	~GameEngine();
 	GameEngine &	operator=(GameEngine const & rhs);
 
-	std::list < GameEntity *>		getGameEntities( void ) const;
+	GameEngine(int width, int height);
 
-	void							addGameEntity( GameEntity * entity);
-	void							removeGameEntity( GameEntity * entity );
+	sf::RenderWindow *	getWindow( void ) const;
+	p_list				getGameEntities( void ) const;
+	int					getWidth( void ) const;
+	int					getHeight( void ) const;
+	
+	sf::Texture &		getTexture(int type);
+
+	void				resizeWindow(int width, int height);
+
+	void				addGameEntity(int type, GameEntity * entity);
+	void				addEnemy(GameEntity * entity);
+	void				addEnemyProjectile(GameEntity * entity);
+	void				addProjectile(GameEntity * entity);
+	void				addPlayer(GameEntity * entity);
+	void				removeGameEntity(GameEntity * entity);
+	void				removeProjectile(GameEntity * entity);
+	void				killPlayer( void );
+
+	void				updateAll(float elapsed);
+	void				drawAll( void );
+
+	void				start( void );
+	void				pollEvent( void );
 
 private:
-	std::list < GameEntity * >	_gameEntities;
+	sf::RenderWindow *	_window;		// pointer to the window
+	GameEntity *		_player;		// pointer to the player
+	p_list				_gameEntities;	// enemies and enemies' projectiles
+	p_list				_projectiles;	// player's projectiles
+	int					_width;			// window's width
+	int					_height;		// window's height
+	sf::Texture			_textures[3];	// game's textures
 };
 
 #endif
