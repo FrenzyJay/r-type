@@ -8,8 +8,8 @@ Player::Player(GameEngine & engine):
 GameEntity()
 {
 	this->_score = 0;
-	this->_width = 40;
-	this->_height = 40;
+	//this->_width = 40;
+	//this->_height = 40;
 	this->_sprite = new sf::Sprite(engine.getTexture( PLAYER ));
 	this->_sprite->setPosition(50, 430);
 }

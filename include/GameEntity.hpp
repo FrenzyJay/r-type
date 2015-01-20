@@ -4,9 +4,11 @@
 # include <SFML/Graphics.hpp>
 # include "GameEngine.hpp"
 
+class GameEngine;
+
 class GameEntity
 {
-private:
+protected:
 	sf::Sprite *	_sprite;
 	int				_life;
 	int				_maxlife;
@@ -33,7 +35,7 @@ public:
 
 	void			hit(int damage);
 
-	void			update(GameEngine & engine, float elapsed);
+	virtual void			update(GameEngine & engine, float elapsed) = 0;
 	void			draw(GameEngine & engine);
 };
 

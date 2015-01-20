@@ -26,7 +26,7 @@ else
 	FLAGS = -Wall -Werror -Wextra
 endif
 
-LIBS = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
+LIBS = -L ~/SFML-2.1/lib -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 #LIBS = ~/SFML-2.1/lib/libsfml-graphics.dylib ~/SFML-2.1/lib/libsfml-system.dylib ~/SFML-2.1/lib/libsfml-window.dylib
 
 CFLAGS += $(FLAGS) $(INCLUDES_DIR)

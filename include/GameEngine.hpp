@@ -59,6 +59,4 @@ private:
 	sf::Texture			_textures[3];	// game's textures
 };
 
-# include "Player.hpp"
-
 #endif

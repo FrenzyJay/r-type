@@ -1,5 +1,6 @@
 #include <iostream>
 #include "GameEngine.hpp"
+#include "Player.hpp"
 
 GameEngine::GameEngine()
 {}
