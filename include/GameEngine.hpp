@@ -3,11 +3,12 @@
 
 # include <list>
 # include <SFML/Window.hpp>
+# include <SFML/Graphics.hpp>
 
 # include "GameEntity.hpp"
-# include "Player.hpp"
 # include "Collision.hpp"
 
+class GameEntity;
 class GameEngine;
 
 enum { PLAYER, PROJECTILE, ENEMY, ENEMY_PROJECTILE };
@@ -57,5 +58,7 @@ private:
 	int					_height;		// window's height
 	sf::Texture			_textures[3];	// game's textures
 };
+
+# include "Player.hpp"
 
 #endif
