@@ -1,4 +1,6 @@
+#include <iostream>
 #include "Player.hpp"
+#include "Projectile.hpp"
 
 Player::Player():
 GameEntity()
@@ -8,10 +10,13 @@ Player::Player(GameEngine & engine):
 GameEntity()
 {
 	this->_score = 0;
-	//this->_width = 40;
-	//this->_height = 40;
+	this->_width = 40;
+	this->_height = 40;
+	this->_speed = 750.f;
+	this->_fireRate = 0.1f;
+	this->_lastShot = 0;
 	this->_sprite = new sf::Sprite(engine.getTexture( PLAYER ));
-	this->_sprite->setPosition(50, 430);
+	this->_sprite->setPosition(30, 280);
 }
 
 Player::Player(Player const & rhs):
@@ -21,9 +26,7 @@ GameEntity()
 }
 
 Player::~Player()
-{
-	delete this->_sprite;
-}
+{}
 
 Player &	Player::operator=(Player const & rhs)
 {
@@ -41,6 +44,26 @@ void	Player::addPoints(int score)
 
 void	Player::update(GameEngine & engine, float elapsed)
 {
-	(void)engine;
-	(void)elapsed;
+	sf::Sprite *	p_sprite;
+
+	p_sprite = engine.getPlayer()->getSprite();
+	this->_lastShot += elapsed;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+	{
+		if (p_sprite->getPosition().y > 5.f)
+			p_sprite->move(0, -engine.getPlayer()->getSpeed() * elapsed);
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+	{
+		if (p_sprite->getPosition().y < engine.getHeight() - 40.f - 5.f)
+			p_sprite->move(0, engine.getPlayer()->getSpeed() * elapsed);
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	{
+		if (this->_lastShot + elapsed > this->_fireRate)
+		{
+			engine.addProjectile(new Projectile(engine));
+			this->_lastShot = 0;
+		}
+	}
 }

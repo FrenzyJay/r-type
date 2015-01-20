@@ -39,6 +39,7 @@ SOURCES = \
 			$(SOURCES_DIR)/GameEngine.cpp \
 			$(SOURCES_DIR)/GameEntity.cpp \
 			$(SOURCES_DIR)/Player.cpp \
+			$(SOURCES_DIR)/Projectile.cpp \
 
 OBJS = $(SOURCES:.cpp=.o)
 

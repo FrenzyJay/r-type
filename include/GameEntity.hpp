@@ -13,8 +13,8 @@ protected:
 	int				_life;
 	int				_maxlife;
 	float			_speed;
-//	int				_width;
-//	int				_height;
+	int				_width;
+	int				_height;
 
 public:
 	GameEntity();

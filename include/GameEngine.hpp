@@ -26,7 +26,9 @@ public:
 	GameEngine(int width, int height);
 
 	sf::RenderWindow *	getWindow( void ) const;
+	GameEntity *		getPlayer( void );
 	p_list				getGameEntities( void ) const;
+	p_list				getProjectiles( void ) const;
 	int					getWidth( void ) const;
 	int					getHeight( void ) const;
 	
@@ -56,7 +58,7 @@ private:
 	p_list				_projectiles;	// player's projectiles
 	int					_width;			// window's width
 	int					_height;		// window's height
-	sf::Texture			_textures[3];	// game's textures
+	sf::Texture			_textures[4];	// game's textures
 };
 
 #endif

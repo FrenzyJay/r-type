@@ -9,6 +9,8 @@ class Player : public GameEntity
 {
 private:
 	int		_score;
+	float	_fireRate;
+	float	_lastShot;
 
 public:
 	Player();
