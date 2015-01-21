@@ -37,7 +37,7 @@ void			Projectile::setDamage(int damage) { this->_damage = damage; }
 
 void			Projectile::update(GameEngine & engine, float elapsed)
 {
-	this->_sprite->move(this->_speed * elapsed, 0.f);
+	this->_sprite->move(this->_speed * elapsed * engine.getTimeRatio(), 0.f);
 	if (this->_sprite->getPosition().x > engine.getWidth())
 		engine.removeProjectile(this);
 	else

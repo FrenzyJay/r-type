@@ -53,12 +53,12 @@ void	Player::update(GameEngine & engine, float elapsed)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 	{
 		if (p_sprite->getPosition().y > 5.f)
-			p_sprite->move(0, -engine.getPlayer()->getSpeed() * elapsed);
+			p_sprite->move(0, -engine.getPlayer()->getSpeed() * elapsed * engine.getTimeRatio());
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 	{
 		if (p_sprite->getPosition().y < engine.getHeight() - 40.f - 5.f)
-			p_sprite->move(0, engine.getPlayer()->getSpeed() * elapsed);
+			p_sprite->move(0, engine.getPlayer()->getSpeed() * elapsed * engine.getTimeRatio());
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{

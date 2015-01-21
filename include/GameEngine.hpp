@@ -17,6 +17,18 @@ typedef std::list< GameEntity * > p_list;
 
 class GameEngine
 {
+private:
+	sf::RenderWindow *	_window;		// pointer to the window
+	GameEntity *		_player;		// pointer to the player
+	p_list				_gameEntities;	// enemies and enemies' projectiles
+	p_list				_projectiles;	// player's projectiles
+	int					_width;			// window's width
+	int					_height;		// window's height
+	sf::Texture			_textures[4];	// game's textures
+	bool				_firstLaunch;
+	bool				_pause;
+	float				_timeRatio;
+
 public:
 	GameEngine();
 	GameEngine(GameEngine const & rhs);
@@ -31,7 +43,8 @@ public:
 	p_list &			getProjectiles( void );
 	int					getWidth( void ) const;
 	int					getHeight( void ) const;
-	
+	float				getTimeRatio( void ) const;
+
 	sf::Texture &		getTexture(int type);
 
 	void				resizeWindow(int width, int height);
@@ -50,15 +63,6 @@ public:
 
 	void				start( void );
 	void				pollEvent( void );
-
-private:
-	sf::RenderWindow *	_window;		// pointer to the window
-	GameEntity *		_player;		// pointer to the player
-	p_list				_gameEntities;	// enemies and enemies' projectiles
-	p_list				_projectiles;	// player's projectiles
-	int					_width;			// window's width
-	int					_height;		// window's height
-	sf::Texture			_textures[4];	// game's textures
 };
 
 #endif

@@ -40,10 +40,10 @@ void	Enemy::update(GameEngine & engine, float elapsed)
 	sf::Sprite *	p_sprite;
 
 	p_sprite = this->_sprite;
-	this->_lastShot += elapsed;
+	this->_lastShot += elapsed * engine.getTimeRatio();
 	if (p_sprite->getPosition().x > -50)
 	{
-		p_sprite->move(-this->_speed * elapsed, 0);
+		p_sprite->move(-this->_speed * elapsed * engine.getTimeRatio(), 0);
 		if (this->_lastShot + elapsed > this->_fireRate)
 		{
 			engine.addEnemyProjectile(new EnemyProjectile(engine, this));
