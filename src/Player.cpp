@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Player.hpp"
 #include "Projectile.hpp"
+#include "Collision.hpp"
 
 Player::Player():
 GameEntity()
@@ -13,8 +14,8 @@ GameEntity()
 	this->_width = 40;
 	this->_height = 40;
 	this->_speed = 750.f;
-	this->_fireRate = 0.1f;
-	this->_lastShot = 0;
+	this->_fireRate = 0.2f;
+	this->_lastShot = 1;
 	this->_sprite = new sf::Sprite(engine.getTexture( PLAYER ));
 	this->_sprite->setPosition(30, 280);
 }
@@ -47,6 +48,7 @@ void	Player::update(GameEngine & engine, float elapsed)
 	sf::Sprite *	p_sprite;
 
 	p_sprite = engine.getPlayer()->getSprite();
+	// input
 	this->_lastShot += elapsed;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 	{
@@ -64,6 +66,14 @@ void	Player::update(GameEngine & engine, float elapsed)
 		{
 			engine.addProjectile(new Projectile(engine));
 			this->_lastShot = 0;
+		}
+	}
+	// collide
+	for (std::list<GameEntity *>::iterator i = engine.getGameEntities().begin(); i != engine.getGameEntities().end(); ++i)
+	{
+		if (Collision::PixelPerfectTest(*(this->_sprite),*((*i)->getSprite())))
+		{
+			engine.removeGameEntity(*i);
 		}
 	}
 }

@@ -14,7 +14,7 @@ GameEngine::GameEngine(int width, int height)
 	Collision::CreateTextureAndBitmask(this->_textures[0], "assets/player.png");
 	Collision::CreateTextureAndBitmask(this->_textures[1], "assets/laser.png");
 	Collision::CreateTextureAndBitmask(this->_textures[2], "assets/evil-pony.png");
-	Collision::CreateTextureAndBitmask(this->_textures[3], "assets/samplespaceships.png");
+	Collision::CreateTextureAndBitmask(this->_textures[3], "assets/enemy-laser.png");
 
 	this->_player = new Player(*this);
 }
@@ -176,7 +176,18 @@ void					GameEngine::start( void )
 {
 	sf::Clock	clock;
 
-	this->addEnemy(new Enemy(*this));	
+	for (int i = 100; i < 550; i += 40)
+		this->addEnemy(new Enemy(*this, 1000, i));
+	for (int i = 100; i < 550; i += 50)
+		this->addEnemy(new Enemy(*this, 2000, i));
+	for (int i = 100; i < 550; i += 100)
+		this->addEnemy(new Enemy(*this, 3000, i));
+	for (int i = 100; i < 550; i += 50)
+		this->addEnemy(new Enemy(*this, 4000, i));
+	for (int i = 100; i < 550; i += 40)
+		this->addEnemy(new Enemy(*this, 5000, i));
+	for (int i = 100; i < 550; i += 100)
+		this->addEnemy(new Enemy(*this, 6000, i));
 
 	while (this->_window->isOpen())
 	{

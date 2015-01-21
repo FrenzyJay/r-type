@@ -46,6 +46,7 @@ SOURCES = \
 			$(SOURCES_DIR)/Player.cpp \
 			$(SOURCES_DIR)/Projectile.cpp \
 			$(SOURCES_DIR)/Enemy.cpp \
+			$(SOURCES_DIR)/EnemyProjectile.cpp \
 
 OBJS = $(SOURCES:.cpp=.o)
 

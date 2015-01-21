@@ -13,7 +13,7 @@ private:
 
 public:
 	Enemy();
-	Enemy(GameEngine & engine);
+	Enemy(GameEngine & engine, int x, int y);
 	Enemy(Enemy const & rhs);
 	virtual ~Enemy();
 	Enemy &		operator=(Enemy const & rhs);
