@@ -25,7 +25,7 @@ private:
 	int					_width;			// window's width
 	int					_height;		// window's height
 	sf::Texture			_textures[4];	// game's textures
-	bool				_firstLaunch;
+	bool				_started;
 	bool				_pause;
 	float				_timeRatio;
 

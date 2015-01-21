@@ -11,7 +11,7 @@ GameEngine::GameEngine(int width, int height)
 	this->_window = new sf::RenderWindow(sf::VideoMode(width, height), "PEW PEW PEW");
 	this->_width = width;
 	this->_height = height;
-	this->_firstLaunch = true;
+	this->_started = false;
 	this->_pause = false;
 	Collision::CreateTextureAndBitmask(this->_textures[0], "assets/player.png");
 	Collision::CreateTextureAndBitmask(this->_textures[1], "assets/laser.png");
@@ -130,7 +130,7 @@ void				GameEngine::removeProjectile(GameEntity * entity)
 
 void				GameEngine::updateAll(float elapsed)
 {
-	if (!this->_pause)
+	if (this->_started)
 	{
 		if (this->_gameEntities.size() > 0)
 		{
@@ -150,7 +150,7 @@ void				GameEngine::updateAll(float elapsed)
 void					GameEngine::drawAll( void )
 {
 	this->_window->clear(sf::Color::Black);
-	if (!this->_pause)
+	if (this->_started)
 	{
 		if (this->_gameEntities.size() > 0)
 		{
@@ -168,6 +168,11 @@ void					GameEngine::drawAll( void )
 			this->_player->draw(*this);
 		this->_window->display();
 	}
+	else
+	{
+		this->_window->clear(sf::Color::White);
+		// Start Menu
+	}
 }
 
 void					GameEngine::pollEvent( void )
@@ -184,6 +189,11 @@ void					GameEngine::pollEvent( void )
 		this->_window->close();
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::C))
 		this->_timeRatio = 0.2f;
+	if (!this->_started)
+	{
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+			this->_started = true;
+	}
 }
 
 void					GameEngine::start( void )
