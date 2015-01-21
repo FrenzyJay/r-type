@@ -1,6 +1,7 @@
 #include <iostream>
 #include "GameEngine.hpp"
 #include "Player.hpp"
+#include "Enemy.hpp"
 
 GameEngine::GameEngine()
 {}
@@ -34,14 +35,14 @@ GameEngine::~GameEngine()
 
 GameEngine &		GameEngine::operator=(GameEngine const & rhs)
 {
-	this->_gameEntities = rhs.getGameEntities();
+	static_cast<void>(rhs);
 	return *this;
 }
 
 sf::RenderWindow *	GameEngine::getWindow( void ) const { return this->_window; }
 GameEntity *		GameEngine::getPlayer( void ) { return this->_player; }
-p_list				GameEngine::getGameEntities( void ) const { return this->_gameEntities; }
-p_list				GameEngine::getProjectiles( void ) const { return this->_projectiles; }
+p_list &			GameEngine::getGameEntities( void ) { return this->_gameEntities; }
+p_list &			GameEngine::getProjectiles( void ) { return this->_projectiles; }
 int					GameEngine::getWidth( void ) const { return this->_width; }
 int					GameEngine::getHeight( void ) const { return this->_height; }
 
@@ -88,24 +89,36 @@ void				GameEngine::killPlayer( void )
 
 void				GameEngine::removeGameEntity(GameEntity * entity)
 {
-	for (std::list<GameEntity *>::iterator i = this->_gameEntities.begin(); i != this->_gameEntities.end(); i++)
+	if (!this->_gameEntities.empty())
 	{
-		if (*i == entity)
+		for (std::list<GameEntity *>::iterator i = this->_gameEntities.begin(); i != this->_gameEntities.end();  )
 		{
-			delete *i;
-			i = this->_projectiles.erase(i);
+			if (*i == entity)
+			{
+				delete *i;
+				i = this->_gameEntities.erase(i);
+				break;
+			}
+			else
+				++i;
 		}
 	}
 }
 
 void				GameEngine::removeProjectile(GameEntity * entity)
 {
-	for (std::list<GameEntity *>::iterator i = this->_projectiles.begin(); i != this->_projectiles.end(); i++)
+	if (!this->_projectiles.empty())
 	{
-		if (*i == entity)
+		for (std::list<GameEntity *>::iterator i = this->_projectiles.begin(); i != this->_projectiles.end();  )
 		{
-			delete *i;
-			i = this->_projectiles.erase(i);
+			if (*i == entity)
+			{
+				delete *i;
+				i = this->_projectiles.erase(i);
+				break;
+			}
+			else
+				++i;
 		}
 	}
 }
@@ -131,12 +144,12 @@ void					GameEngine::drawAll( void )
 	this->_window->clear(sf::Color::Black);
 	if (this->_gameEntities.size() > 0)
 	{
-		for (std::list<GameEntity *>::iterator i = this->_gameEntities.begin(); i != this->_gameEntities.end(); i++)
+		for (std::list<GameEntity *>::iterator i = this->_gameEntities.begin(); i != this->_gameEntities.end(); ++i)
 			(*i)->draw(*this);
 	}
 	if (this->_projectiles.size() > 0)
 	{
-		for (std::list<GameEntity *>::iterator i = this->_projectiles.begin(); i != this->_projectiles.end(); i++)
+		for (std::list<GameEntity *>::iterator i = this->_projectiles.begin(); i != this->_projectiles.end(); ++i)
 		{
 			(*i)->draw(*this);
 		}
@@ -162,6 +175,8 @@ void					GameEngine::pollEvent( void )
 void					GameEngine::start( void )
 {
 	sf::Clock	clock;
+
+	this->addEnemy(new Enemy(*this));	
 
 	while (this->_window->isOpen())
 	{

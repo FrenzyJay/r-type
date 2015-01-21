@@ -1,4 +1,5 @@
 #include <iostream>
+#include "Collision.hpp"
 #include "Projectile.hpp"
 
 Projectile::Projectile():
@@ -39,4 +40,21 @@ void			Projectile::update(GameEngine & engine, float elapsed)
 	this->_sprite->move(this->_speed * elapsed, 0.f);
 	if (this->_sprite->getPosition().x > engine.getWidth())
 		engine.removeProjectile(this);
+	else
+	{
+		// collide with enemies
+		for (std::list<GameEntity *>::iterator i = engine.getGameEntities().begin(); i != engine.getGameEntities().end(); )
+		{
+			if (Collision::PixelPerfectTest(*(this->_sprite), *((*i)->getSprite())))
+			{
+				// crap too, call the hit member function of gameentity but gameneity does not store gameengine so f*ck off
+				engine.removeGameEntity(*i);
+				// this is crap, soon it will be the gun fire member function that will be called
+				engine.removeProjectile(this);
+				break;
+			}
+			else
+				++i;
+		}
+	}
 }

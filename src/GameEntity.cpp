@@ -1,3 +1,4 @@
+#include <iostream>
 #include "GameEntity.hpp"
 
 GameEntity::GameEntity()
@@ -40,6 +41,7 @@ void			GameEntity::hit(int damage)
 {
 	if (this->_life >= 0)
 		this->_life -= damage;
+
 }
 
 void			GameEntity::draw(GameEngine & engine)

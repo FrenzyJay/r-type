@@ -27,8 +27,8 @@ public:
 
 	sf::RenderWindow *	getWindow( void ) const;
 	GameEntity *		getPlayer( void );
-	p_list				getGameEntities( void ) const;
-	p_list				getProjectiles( void ) const;
+	p_list &			getGameEntities( void );
+	p_list &			getProjectiles( void );
 	int					getWidth( void ) const;
 	int					getHeight( void ) const;
 	

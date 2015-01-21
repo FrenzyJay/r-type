@@ -26,8 +26,13 @@ else
 	FLAGS = -Wall -Werror -Wextra
 endif
 
-LIBS = -L ~/SFML-2.1/lib -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
-#LIBS = ~/SFML-2.1/lib/libsfml-graphics.dylib ~/SFML-2.1/lib/libsfml-system.dylib ~/SFML-2.1/lib/libsfml-window.dylib
+ifeq ($(USER), ato)
+	LIBS = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
+endif
+ifeq ($(USER), jvincent)
+	LIBS = -L ~/SFML-2.1/lib -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
+endif
+# ADD YOUR CONFIG HERE :)
 
 CFLAGS += $(FLAGS) $(INCLUDES_DIR)
 
@@ -40,6 +45,7 @@ SOURCES = \
 			$(SOURCES_DIR)/GameEntity.cpp \
 			$(SOURCES_DIR)/Player.cpp \
 			$(SOURCES_DIR)/Projectile.cpp \
+			$(SOURCES_DIR)/Enemy.cpp \
 
 OBJS = $(SOURCES:.cpp=.o)
 
