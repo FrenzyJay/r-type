@@ -11,7 +11,6 @@ GameEngine::GameEngine(int width, int height)
 	this->_window = new sf::RenderWindow(sf::VideoMode(width, height), "PEW PEW PEW");
 	this->_width = width;
 	this->_height = height;
-	this->_started = false;
 	this->_pause = false;
 	Collision::CreateTextureAndBitmask(this->_textures[0], "assets/player.png");
 	Collision::CreateTextureAndBitmask(this->_textures[1], "assets/laser.png");
@@ -130,49 +129,38 @@ void				GameEngine::removeProjectile(GameEntity * entity)
 
 void				GameEngine::updateAll(float elapsed)
 {
-	if (this->_started)
+	if (this->_gameEntities.size() > 0)
 	{
-		if (this->_gameEntities.size() > 0)
-		{
-			for (std::list<GameEntity *>::iterator i = this->_gameEntities.begin(); i != this->_gameEntities.end(); ++i)
-				(*i)->update(*this, elapsed);
-		}
-		if (this->_projectiles.size() > 0)
-		{
-			for (std::list<GameEntity *>::iterator i = this->_projectiles.begin(); i != this->_projectiles.end(); ++i)
-				(*i)->update(*this, elapsed);
-		}
-		if (this->_player)
-			this->_player->update(*this, elapsed);
+		for (std::list<GameEntity *>::iterator i = this->_gameEntities.begin(); i != this->_gameEntities.end(); ++i)
+			(*i)->update(*this, elapsed);
 	}
+	if (this->_projectiles.size() > 0)
+	{
+		for (std::list<GameEntity *>::iterator i = this->_projectiles.begin(); i != this->_projectiles.end(); ++i)
+			(*i)->update(*this, elapsed);
+	}
+	if (this->_player)
+		this->_player->update(*this, elapsed);
 }
 
 void					GameEngine::drawAll( void )
 {
 	this->_window->clear(sf::Color::Black);
-	if (this->_started)
+	if (this->_gameEntities.size() > 0)
 	{
-		if (this->_gameEntities.size() > 0)
-		{
-			for (std::list<GameEntity *>::iterator i = this->_gameEntities.begin(); i != this->_gameEntities.end(); ++i)
-				(*i)->draw(*this);
-		}
-		if (this->_projectiles.size() > 0)
-		{
-			for (std::list<GameEntity *>::iterator i = this->_projectiles.begin(); i != this->_projectiles.end(); ++i)
-			{
-				(*i)->draw(*this);
-			}
-		}
-		if (this->_player)
-			this->_player->draw(*this);
-		this->_window->display();
+		for (std::list<GameEntity *>::iterator i = this->_gameEntities.begin(); i != this->_gameEntities.end(); ++i)
+			(*i)->draw(*this);
 	}
-	else
+	if (this->_projectiles.size() > 0)
 	{
-		this->_window->clear(sf::Color::White);
-		// Start Menu
+		for (std::list<GameEntity *>::iterator i = this->_projectiles.begin(); i != this->_projectiles.end(); ++i)
+		{
+			(*i)->draw(*this);
+		}
 	}
+	if (this->_player)
+		this->_player->draw(*this);
+	this->_window->display();
 }
 
 void					GameEngine::pollEvent( void )
@@ -189,11 +177,6 @@ void					GameEngine::pollEvent( void )
 		this->_window->close();
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::C))
 		this->_timeRatio = 0.2f;
-	if (!this->_started)
-	{
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-			this->_started = true;
-	}
 }
 
 void					GameEngine::start( void )
